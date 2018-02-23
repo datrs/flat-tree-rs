@@ -127,8 +127,8 @@ pub fn children_with_depth(i: u64, depth: u64) -> Option<(u64, u64)> {
   } else if depth == 0 {
     Some((i, i))
   } else {
-    let off = offset_with_depth(i, depth) >> 1;
-    Some((index(depth - 1, off), index(depth - 1, off + 1)))
+    let offset = offset_with_depth(i, depth) * 2;
+    Some((index(depth - 1, offset), index(depth - 1, offset + 1)))
   }
 }
 
@@ -139,6 +139,7 @@ pub fn children_with_depth(i: u64, depth: u64) -> Option<(u64, u64)> {
 /// assert_eq!(flat_tree::children(0), None);
 /// assert_eq!(flat_tree::children(1), Some((0, 2)));
 /// assert_eq!(flat_tree::children(3), Some((1, 5)));
+/// assert_eq!(flat_tree::children(9), Some((8, 10)));
 /// ```
 pub fn children(i: u64) -> Option<(u64, u64)> {
   children_with_depth(i, depth(i))
