@@ -1,8 +1,9 @@
 # flat-tree
 
-Rust version of [flat-tree](https://github.com/mafintosh/flat-tree). A series of functions to map a binary tree to a list
+[![crates.io version][1]][2] [![build status][3]][4]
+[![downloads][5]][6] [![docs.rs docs][7]][8]
 
-[![build status](http://img.shields.io/travis/mafintosh/flat-tree-rs.svg?style=flat)](http://travis-ci.org/mafintosh/flat-tree-rs)
+> Rust version of [flat-tree](https://github.com/mafintosh/flat-tree). A series of functions to map a binary tree to a list.
 
 ## Usage
 
@@ -74,3 +75,12 @@ Returns all the previous fully rooted trees before the node
 ## License
 
 MIT
+
+[1]: https://img.shields.io/crates/v/flat-tree.svg?style=flat-square
+[2]: https://crates.io/crate/flat-tree
+[3]: https://img.shields.io/travis/datrs/flat-tree.svg?style=flat-square
+[4]: https://travis-ci.org/datrs/flat-tree
+[5]: https://img.shields.io/crates/d/flat-tree.svg?style=flat-square
+[6]: https://crates.io/crate/flat-tree
+[7]: https://docs.rs/flat-tree/badge.svg
+[8]: https://docs.rs/flat-tree
