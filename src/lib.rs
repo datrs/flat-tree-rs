@@ -24,7 +24,7 @@
 /// assert_eq!(flat_tree::index(0, 1), 2);
 /// assert_eq!(flat_tree::index(0, 2), 4);
 /// ```
-pub fn index(depth: u64, offset: u64) -> u64 {
+pub fn index(depth: usize, offset: usize) -> usize {
   (offset << depth + 1) | ((1 << depth) - 1)
 }
 
@@ -38,7 +38,7 @@ pub fn index(depth: u64, offset: u64) -> u64 {
 /// assert_eq!(flat_tree::depth(3), 2);
 /// assert_eq!(flat_tree::depth(4), 0);
 /// ```
-pub fn depth(i: u64) -> u64 {
+pub fn depth(i: usize) -> usize {
   let mut depth = 0;
   let mut i = i;
   while is_odd(i) {
@@ -49,7 +49,7 @@ pub fn depth(i: u64) -> u64 {
 }
 
 /// Returns the offset of a node with a depth.
-pub fn offset_with_depth(i: u64, depth: u64) -> u64 {
+pub fn offset_with_depth(i: usize, depth: usize) -> usize {
   if is_even(i) {
     i / 2
   } else {
@@ -67,12 +67,12 @@ pub fn offset_with_depth(i: u64, depth: u64) -> u64 {
 /// assert_eq!(flat_tree::offset(3), 0);
 /// assert_eq!(flat_tree::offset(4), 2);
 /// ```
-pub fn offset(i: u64) -> u64 {
+pub fn offset(i: usize) -> usize {
   offset_with_depth(i, depth(i))
 }
 
 /// Returns the parent of a node with a depth.
-pub fn parent_with_depth(i: u64, depth: u64) -> u64 {
+pub fn parent_with_depth(i: usize, depth: usize) -> usize {
   index(depth + 1, offset_with_depth(i, depth) >> 1)
 }
 
@@ -88,12 +88,12 @@ pub fn parent_with_depth(i: u64, depth: u64) -> u64 {
 /// assert_eq!(flat_tree::parent(2), 1);
 /// assert_eq!(flat_tree::parent(1), 3);
 /// ```
-pub fn parent(i: u64) -> u64 {
+pub fn parent(i: usize) -> usize {
   parent_with_depth(i, depth(i))
 }
 
 /// Returns the sibling of a node with a depth.
-pub fn sibling_with_depth(i: u64, depth: u64) -> u64 {
+pub fn sibling_with_depth(i: usize, depth: usize) -> usize {
   index(depth, offset(i) ^ 1)
 }
 
@@ -106,29 +106,32 @@ pub fn sibling_with_depth(i: u64, depth: u64) -> u64 {
 /// assert_eq!(flat_tree::sibling(1), 5);
 /// assert_eq!(flat_tree::sibling(5), 1);
 /// ```
-pub fn sibling(i: u64) -> u64 {
+pub fn sibling(i: usize) -> usize {
   sibling_with_depth(i, depth(i))
 }
 
 /// Returns the parent's sibling, of a node, with a depth.
-pub fn uncle_with_depth(i: u64, depth: u64) -> u64 {
+pub fn uncle_with_depth(i: usize, depth: usize) -> usize {
   sibling_with_depth(parent_with_depth(i, depth), depth + 1)
 }
 
 /// Returns the parent's sibling, of a node.
-pub fn uncle(i: u64) -> u64 {
+pub fn uncle(i: usize) -> usize {
   uncle_with_depth(i, depth(i))
 }
 
 /// Returns both children of a node, with a depth.
-pub fn children_with_depth(i: u64, depth: u64) -> Option<(u64, u64)> {
+pub fn children_with_depth(i: usize, depth: usize) -> Option<(usize, usize)> {
   if is_even(i) {
     None
   } else if depth == 0 {
     Some((i, i))
   } else {
     let offset = offset_with_depth(i, depth) * 2;
-    Some((index(depth - 1, offset), index(depth - 1, offset + 1)))
+    Some((
+      index(depth - 1, offset),
+      index(depth - 1, offset + 1),
+    ))
   }
 }
 
@@ -141,19 +144,22 @@ pub fn children_with_depth(i: u64, depth: u64) -> Option<(u64, u64)> {
 /// assert_eq!(flat_tree::children(3), Some((1, 5)));
 /// assert_eq!(flat_tree::children(9), Some((8, 10)));
 /// ```
-pub fn children(i: u64) -> Option<(u64, u64)> {
+pub fn children(i: usize) -> Option<(usize, usize)> {
   children_with_depth(i, depth(i))
 }
 
 /// Returns only the left child of a node, with a depth
 // TODO: handle errors
-pub fn left_child_with_depth(i: u64, depth: u64) -> Option<u64> {
+pub fn left_child_with_depth(i: usize, depth: usize) -> Option<usize> {
   if is_even(i) {
     None
   } else if depth == 0 {
     Some(i)
   } else {
-    Some(index(depth - 1, offset_with_depth(i, depth) << 1))
+    Some(index(
+      depth - 1,
+      offset_with_depth(i, depth) << 1,
+    ))
   }
 }
 
@@ -165,18 +171,21 @@ pub fn left_child_with_depth(i: u64, depth: u64) -> Option<u64> {
 /// assert_eq!(flat_tree::left_child(1), Some(0));
 /// assert_eq!(flat_tree::left_child(3), Some(1));
 /// ```
-pub fn left_child(i: u64) -> Option<u64> {
+pub fn left_child(i: usize) -> Option<usize> {
   left_child_with_depth(i, depth(i))
 }
 
 /// Returns only the left child of a node, with a depth.
-pub fn right_child_with_depth(i: u64, depth: u64) -> Option<u64> {
+pub fn right_child_with_depth(i: usize, depth: usize) -> Option<usize> {
   if is_even(i) {
     None
   } else if depth == 0 {
     Some(i)
   } else {
-    Some(index(depth - 1, (offset_with_depth(i, depth) << 1) + 1))
+    Some(index(
+      depth - 1,
+      (offset_with_depth(i, depth) << 1) + 1,
+    ))
   }
 }
 
@@ -189,12 +198,12 @@ pub fn right_child_with_depth(i: u64, depth: u64) -> Option<u64> {
 /// assert_eq!(flat_tree::right_child(3), Some(5));
 /// ```
 // TODO: handle errors
-pub fn right_child(i: u64) -> Option<u64> {
+pub fn right_child(i: usize) -> Option<usize> {
   right_child_with_depth(i, depth(i))
 }
 
 /// Returns the right most node in the tree that the node spans, with a depth.
-pub fn right_span_with_depth(i: u64, depth: u64) -> u64 {
+pub fn right_span_with_depth(i: usize, depth: usize) -> usize {
   if depth == 0 {
     i
   } else {
@@ -212,12 +221,12 @@ pub fn right_span_with_depth(i: u64, depth: u64) -> u64 {
 /// assert_eq!(flat_tree::right_span(23), 30);
 /// assert_eq!(flat_tree::right_span(27), 30);
 /// ```
-pub fn right_span(i: u64) -> u64 {
+pub fn right_span(i: usize) -> usize {
   right_span_with_depth(i, depth(i))
 }
 
 /// Returns the left most node in the tree that the node spans, with a depth.
-pub fn left_span_with_depth(i: u64, depth: u64) -> u64 {
+pub fn left_span_with_depth(i: usize, depth: usize) -> usize {
   if depth == 0 {
     i
   } else {
@@ -235,13 +244,13 @@ pub fn left_span_with_depth(i: u64, depth: u64) -> u64 {
 /// assert_eq!(flat_tree::left_span(23), 16);
 /// assert_eq!(flat_tree::left_span(27), 24);
 /// ```
-pub fn left_span(i: u64) -> u64 {
+pub fn left_span(i: usize) -> usize {
   left_span_with_depth(i, depth(i))
 }
 
 /// Returns the left and right most nodes in the tree that the node spans, with
 /// a depth.
-pub fn spans_with_depth(i: u64, depth: u64) -> (u64, u64) {
+pub fn spans_with_depth(i: usize, depth: usize) -> (usize, usize) {
   (
     left_span_with_depth(i, depth),
     right_span_with_depth(i, depth),
@@ -258,12 +267,12 @@ pub fn spans_with_depth(i: u64, depth: u64) -> (u64, u64) {
 /// assert_eq!(flat_tree::spans(23), (16, 30));
 /// assert_eq!(flat_tree::spans(27), (24, 30));
 /// ```
-pub fn spans(i: u64) -> (u64, u64) {
+pub fn spans(i: usize) -> (usize, usize) {
   spans_with_depth(i, depth(i))
 }
 
 /// Returns how many nodes are in the tree that the node spans, with a depth.
-pub fn count_with_depth(_: u64, depth: u64) -> u64 {
+pub fn count_with_depth(_: usize, depth: usize) -> usize {
   (2 << depth) - 1
 }
 
@@ -278,7 +287,7 @@ pub fn count_with_depth(_: u64, depth: u64) -> u64 {
 /// assert_eq!(flat_tree::count(23), 15);
 /// assert_eq!(flat_tree::count(27), 7);
 /// ```
-pub fn count(i: u64) -> u64 {
+pub fn count(i: usize) -> usize {
   count_with_depth(i, depth(i))
 }
 
@@ -293,7 +302,7 @@ pub fn count(i: u64) -> u64 {
 /// assert_eq!(flat_tree::full_roots(18), [7, 16]);
 /// assert_eq!(flat_tree::full_roots(16), [7]);
 /// ```
-pub fn full_roots(i: u64) -> Vec<u64> {
+pub fn full_roots(i: usize) -> Vec<usize> {
   let mut result = Vec::with_capacity(64);
 
   if is_odd(i) {
@@ -321,7 +330,7 @@ pub fn full_roots(i: u64) -> Vec<u64> {
 }
 
 #[inline(always)]
-fn is_even(num: u64) -> bool {
+fn is_even(num: usize) -> bool {
   (num & 1) == 0
 }
 #[test]
@@ -333,7 +342,7 @@ fn test_is_even() {
 }
 
 #[inline(always)]
-fn is_odd(num: u64) -> bool {
+fn is_odd(num: usize) -> bool {
   (num & 1) != 0
 }
 #[test]
