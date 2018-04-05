@@ -23,6 +23,12 @@
 /// assert_eq!(flat_tree::index(0, 0), 0);
 /// assert_eq!(flat_tree::index(0, 1), 2);
 /// assert_eq!(flat_tree::index(0, 2), 4);
+/// assert_eq!(flat_tree::index(1, 2), 9);
+/// assert_eq!(flat_tree::index(1, 3), 13);
+/// assert_eq!(flat_tree::index(2, 1), 11);
+/// assert_eq!(flat_tree::index(2, 2), 19);
+/// assert_eq!(flat_tree::index(3, 0), 7);
+/// assert_eq!(flat_tree::index(3, 1), 23);
 /// ```
 pub fn index(depth: usize, offset: usize) -> usize {
   (offset << depth + 1) | ((1 << depth) - 1)
