@@ -295,37 +295,51 @@ pub fn count(i: usize) -> usize {
 ///
 /// ## Examples
 /// ```rust
-/// assert_eq!(flat_tree::full_roots(0), []);
-/// assert_eq!(flat_tree::full_roots(2), [0]);
-/// assert_eq!(flat_tree::full_roots(8), [3]);
-/// assert_eq!(flat_tree::full_roots(20), [7, 17]);
-/// assert_eq!(flat_tree::full_roots(18), [7, 16]);
-/// assert_eq!(flat_tree::full_roots(16), [7]);
+/// use flat_tree::full_roots;
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(0, &mut nodes);
+/// assert_eq!(nodes, []);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(2, &mut nodes);
+/// assert_eq!(nodes, [0]);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(8, &mut nodes);
+/// assert_eq!(nodes, [3]);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(20, &mut nodes);
+/// assert_eq!(nodes, [7, 17]);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(18, &mut nodes);
+/// assert_eq!(nodes, [7, 16]);
+///
+/// let mut nodes = Vec::with_capacity(16);
+/// full_roots(16, &mut nodes);
+/// assert_eq!(nodes, [7]);
 /// ```
-pub fn full_roots(i: usize) -> Vec<usize> {
-  let mut result = Vec::with_capacity(64);
-
+pub fn full_roots(i: usize, nodes: &mut Vec<usize>) {
   if is_odd(i) {
-    result
-  } else {
-    let mut tmp = i >> 1;
-    let mut offset = 0;
-    let mut factor = 1;
+    return;
+  }
+  let mut tmp = i >> 1;
+  let mut offset = 0;
+  let mut factor = 1;
 
-    loop {
-      if tmp == 0 {
-        break;
-      }
-      while factor * 2 <= tmp {
-        factor *= 2;
-      }
-      result.push(offset + factor - 1);
-      offset += 2 * factor;
-      tmp -= factor;
-      factor = 1;
+  loop {
+    if tmp == 0 {
+      break;
     }
-
-    result
+    while factor * 2 <= tmp {
+      factor *= 2;
+    }
+    nodes.push(offset + factor - 1);
+    offset += 2 * factor;
+    tmp -= factor;
+    factor = 1;
   }
 }
 
