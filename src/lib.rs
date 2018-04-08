@@ -293,6 +293,9 @@ pub fn count(i: usize) -> usize {
 
 /// Returns all the previous fully rooted trees before the node.
 ///
+/// ## Panics
+/// If an uneven index is passed.
+///
 /// ## Examples
 /// ```rust
 /// use flat_tree::full_roots;
@@ -322,9 +325,13 @@ pub fn count(i: usize) -> usize {
 /// assert_eq!(nodes, [7]);
 /// ```
 pub fn full_roots(i: usize, nodes: &mut Vec<usize>) {
-  if is_odd(i) {
-    return;
-  }
+  assert!(
+    is_even(i),
+    format!(
+      "You can only look up roots for depth 0 blocks, got index {}",
+      i
+    )
+  );
   let mut tmp = i >> 1;
   let mut offset = 0;
   let mut factor = 1;
