@@ -350,7 +350,7 @@ pub fn full_roots(i: usize, nodes: &mut Vec<usize>) {
   }
 }
 
-#[inline(always)]
+#[inline]
 fn is_even(num: usize) -> bool {
   (num & 1) == 0
 }
@@ -362,7 +362,7 @@ fn test_is_even() {
   assert_eq!(is_even(3), false);
 }
 
-#[inline(always)]
+#[inline]
 fn is_odd(num: usize) -> bool {
   (num & 1) != 0
 }
