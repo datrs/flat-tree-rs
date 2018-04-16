@@ -7,3 +7,6 @@ repository = "https://github.com/mafintosh/flat-tree-rs"
 keywords = ["flat", "tree", "binary"]
 readme = "README.md"
 license = "MIT"
+
+[dev-dependencies]
+clippy = "0.0"

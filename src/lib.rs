@@ -1,20 +1,8 @@
-//! You can represent a binary tree in a simple flat list using the following
-//! structure:
-//!
-//!
-//! ```text
-//!       3
-//!   1       5
-//! 0   2   4   6  ...
-//! ```
-//!
-//! This module exposes a series of functions to help you build and maintain
-//! this data structure.
-//!
-//! ## See Also
-//! - [mafintosh/merkle-tree-stream (JavaScript)](https://github.com/mafintosh/merkle-tree-stream)
-
 #![deny(missing_docs)]
+#![feature(external_doc)]
+#![doc(include = "../README.md")]
+#![cfg_attr(test, feature(plugin))]
+#![cfg_attr(test, plugin(clippy))]
 
 /// Returns the flat-tree of the tree node at the specified depth and offset.
 ///

@@ -3,8 +3,8 @@
 [![crates.io version][1]][2] [![build status][3]][4]
 [![downloads][5]][6] [![docs.rs docs][7]][8]
 
-Rust version of [mafintosh/flat-tree](https://github.com/mafintosh/flat-tree).
-Map a binary tree to a list.
+Map a binary tree to a list. Adapted from
+[mafintosh/flat-tree](https://github.com/mafintosh/flat-tree).
 
 - [Documentation][8]
 - [Crates.io][2]
@@ -16,6 +16,19 @@ extern crate flat_tree;
 let parent = flat_tree::parent(0);
 println!("parent of 0 is {}", parent);
 ```
+
+## Why?
+You can represent a binary tree in a simple flat list using the following
+structure:
+
+```text
+      3
+  1       5
+0   2   4   6  ...
+```
+
+This module exposes a series of functions to help you build and maintain
+this data structure.
 
 ## License
 [MIT](./LICENSE-MIT) OR [Apache-2.0](./LICENSE-APACHE)
