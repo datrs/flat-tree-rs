@@ -4,6 +4,10 @@
 #![cfg_attr(test, feature(plugin))]
 #![cfg_attr(test, plugin(clippy))]
 
+mod iterator;
+
+pub use iterator::Iterator;
+
 /// Returns the flat-tree of the tree node at the specified depth and offset.
 ///
 /// ## Examples
