@@ -23,7 +23,7 @@ pub use iterator::Iterator;
 /// assert_eq!(flat_tree::index(3, 1), 23);
 /// ```
 pub fn index(depth: usize, offset: usize) -> usize {
-  (offset << depth + 1) | ((1 << depth) - 1)
+  (offset << (depth + 1)) | ((1 << depth) - 1)
 }
 
 /// Returns the depth of a node.
@@ -383,7 +383,7 @@ fn test_child_to_parent_to_child() {
   for _ in 0..50 {
     child = parent(child)
   }
-  assert_eq!(child, 1125899906842623);
+  assert_eq!(child, 1_125_899_906_842_623);
   for _ in 0..50 {
     child = left_child(child).expect("no valid number returned");
   }
