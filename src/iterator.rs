@@ -1,10 +1,10 @@
 //! ## Usage
 //! ```rust
 //! let mut iter = flat_tree::Iterator::new(0);
-//! assert_eq!(iter.next(), Some(0));
-//! assert_eq!(iter.next(), Some(1));
 //! assert_eq!(iter.next(), Some(2));
-//! assert_eq!(iter.parent(), 7);
+//! assert_eq!(iter.next(), Some(4));
+//! assert_eq!(iter.next(), Some(6));
+//! assert_eq!(iter.parent(), 5);
 //! ```
 use super::*;
 
@@ -26,10 +26,7 @@ impl Iterator {
       factor: 0,
     };
 
-    if index != 0 {
-      instance.seek(index);
-    }
-
+    instance.seek(index);
     instance
   }
 
@@ -42,7 +39,7 @@ impl Iterator {
   /// Seek to a position in the iterator.
   pub fn seek(&mut self, index: usize) {
     self.index = index;
-    if (self.index & 1) > 0 {
+    if is_odd(self.index) {
       self.offset = offset(index);
       self.factor = two_pow(depth(index) + 1);
     } else {
@@ -53,14 +50,14 @@ impl Iterator {
 
   /// Check if the position of the iterator is currently on a left node.
   #[inline]
-  pub fn is_left(&mut self) -> bool {
-    (self.offset & 1) == 0
+  pub fn is_left(&self) -> bool {
+    is_even(self.offset)
   }
 
   /// Check if the position of the iterator is currently on a right node.
   #[inline]
-  pub fn is_right(&mut self) -> bool {
-    !self.is_left()
+  pub fn is_right(&self) -> bool {
+    is_odd(self.offset)
   }
 
   /// Move the cursor and get the previous item from the current position.
@@ -76,7 +73,7 @@ impl Iterator {
   /// Get the sibling for the current position and move the cursor.
   pub fn sibling(&mut self) -> usize {
     if self.is_left() {
-      self.next().unwrap() // We always have a future value.
+      self.next().unwrap() // this is always safe
     } else {
       self.prev()
     }
@@ -90,14 +87,15 @@ impl Iterator {
 
   /// Get the parent for the current position and move the cursor.
   pub fn parent(&mut self) -> usize {
-    if self.offset & 1 > 0 {
+    if is_odd(self.offset) {
       self.index -= self.factor / 2;
-      self.offset = self.offset - 1 / 2;
+      self.offset -= 1 / 2;
     } else {
       self.index += self.factor / 2;
       self.offset /= 2;
     }
     self.factor *= 2;
+    println!("{}", self.index);
     self.index
   }
 
@@ -144,9 +142,15 @@ impl iter::Iterator for Iterator {
   type Item = usize;
 
   fn next(&mut self) -> Option<Self::Item> {
-    self.index += 1;
+    self.offset += 1;
     self.index += self.factor;
     Some(self.index)
+  }
+}
+
+impl Default for Iterator {
+  fn default() -> Self {
+    Self::new(0)
   }
 }
 
