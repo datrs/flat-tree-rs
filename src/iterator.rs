@@ -36,6 +36,12 @@ impl Iterator {
     self.index
   }
 
+  /// Get the current offset.
+  #[inline]
+  pub fn offset(&self) -> usize {
+    self.offset
+  }
+
   /// Seek to a position in the iterator.
   pub fn seek(&mut self, index: usize) {
     self.index = index;
@@ -79,23 +85,16 @@ impl Iterator {
     }
   }
 
-  /// Get the offset for the current position and move the cursor.
-  pub fn offset(&mut self) -> usize {
-    self.index = offset(self.index);
-    self.index
-  }
-
   /// Get the parent for the current position and move the cursor.
   pub fn parent(&mut self) -> usize {
     if is_odd(self.offset) {
       self.index -= self.factor / 2;
-      self.offset -= 1 / 2;
+      self.offset = (self.offset - 1) / 2;
     } else {
       self.index += self.factor / 2;
       self.offset /= 2;
     }
     self.factor *= 2;
-    println!("{}", self.index);
     self.index
   }
 
