@@ -1,7 +1,8 @@
 extern crate flat_tree;
 
 #[test]
-/// Postmortem: offset was incorrectly calculated when finding a parent for a node with an odd offset.
+/// Postmortem: offset was incorrectly calculated when finding a parent for a
+/// node with an odd offset.
 fn parent_and_odd_offset() {
   let mut iterator = flat_tree::Iterator::new(10);
   assert_eq!(iterator.index(), 10);
