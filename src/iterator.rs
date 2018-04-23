@@ -11,6 +11,7 @@ use super::*;
 use std::iter;
 
 /// Iterator over a flat-tree.
+#[derive(Debug)]
 pub struct Iterator {
   index: usize,
   offset: usize,
