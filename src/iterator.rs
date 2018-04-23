@@ -13,76 +13,129 @@ use std::iter;
 /// Iterator over a flat-tree.
 pub struct Iterator {
   index: usize,
+  offset: usize,
+  factor: usize,
 }
 
 impl Iterator {
   /// Create a new iterator.
   pub fn new(index: usize) -> Self {
-    Self { index }
+    let mut instance = Self {
+      index: 0,
+      offset: 0,
+      factor: 0,
+    };
+
+    if index != 0 {
+      instance.seek(index);
+    }
+
+    instance
+  }
+
+  /// Get the current index.
+  #[inline]
+  pub fn index(&self) -> usize {
+    self.index
   }
 
   /// Seek to a position in the iterator.
   pub fn seek(&mut self, index: usize) {
     self.index = index;
+    if (self.index & 1) > 0 {
+      self.offset = offset(index);
+      self.factor = two_pow(depth(index) + 1);
+    } else {
+      self.offset = index / 2;
+      self.factor = 2;
+    }
   }
 
-  /// Get the offset for the current position.
+  /// Check if the position of the iterator is currently on a left node.
+  #[inline]
+  pub fn is_left(&mut self) -> bool {
+    (self.offset & 1) == 0
+  }
+
+  /// Check if the position of the iterator is currently on a right node.
+  #[inline]
+  pub fn is_right(&mut self) -> bool {
+    !self.is_left()
+  }
+
+  /// Move the cursor and get the previous item from the current position.
+  pub fn prev(&mut self) -> usize {
+    if self.offset == 0 {
+      return self.index;
+    }
+    self.offset -= 1;
+    self.index -= self.factor;
+    self.index
+  }
+
+  /// Get the sibling for the current position and move the cursor.
+  pub fn sibling(&mut self) -> usize {
+    if self.is_left() {
+      self.next().unwrap() // We always have a future value.
+    } else {
+      self.prev()
+    }
+  }
+
+  /// Get the offset for the current position and move the cursor.
   pub fn offset(&mut self) -> usize {
     self.index = offset(self.index);
     self.index
   }
 
-  /// Get the parent for the current position.
+  /// Get the parent for the current position and move the cursor.
   pub fn parent(&mut self) -> usize {
-    self.index = parent(self.index);
-    self.index
-  }
-
-  /// Get the sibling for the current position.
-  pub fn sibling(&mut self) -> usize {
-    self.index = sibling(self.index);
-    self.index
-  }
-
-  /// Get the uncle for the current position.
-  pub fn uncle(&mut self) -> usize {
-    self.index = uncle(self.index);
-    self.index
-  }
-
-  /// Get the left_child for the current position.
-  pub fn left_child(&mut self) -> Option<usize> {
-    let res = left_child(self.index);
-    if let Some(index) = res {
-      self.index = index;
+    if self.offset & 1 > 0 {
+      self.index -= self.factor / 2;
+      self.offset = self.offset - 1 / 2;
+    } else {
+      self.index += self.factor / 2;
+      self.offset /= 2;
     }
-    res
+    self.factor *= 2;
+    self.index
   }
 
-  /// Get the right_child for the current position.
-  pub fn right_child(&mut self) -> Option<usize> {
-    let res = right_child(self.index);
-    if let Some(index) = res {
-      self.index = index;
-    }
-    res
-  }
-
-  /// Get the left_span for the current position.
+  /// Get the left_span for the current position and move the cursor.
   pub fn left_span(&mut self) -> usize {
-    self.index = left_span(self.index);
+    self.index = self.index - self.factor / 2 + 1;
+    self.offset = self.index / 2;
+    self.factor = 2;
     self.index
   }
 
-  /// Get the right_span for the current position.
+  /// Get the right_span for the current position and move the cursor.
   pub fn right_span(&mut self) -> usize {
-    self.index = right_span(self.index);
+    self.index = self.index + self.factor / 2 - 1;
+    self.offset = self.index / 2;
+    self.factor = 2;
     self.index
   }
 
-  /// Get the count for the current position.
-  pub fn count(&mut self) -> usize {
-    self.index = count(self.index);
+  /// Get the left_child for the current position and move the cursor.
+  pub fn left_child(&mut self) -> usize {
+    if self.factor == 2 {
+      return self.index;
+    }
+    self.factor /= 2;
+    self.index -= self.factor / 2;
+    self.offset *= 2;
+    self.index
+  }
+
+  /// Get the right_child for the current position and move the cursor.
+  pub fn right_child(&mut self) -> usize {
+    if self.factor == 2 {
+      return self.index;
+    }
+    self.factor /= 2;
+    self.index += self.factor / 2;
+    self.offset = 2 * self.offset + 1;
     self.index
   }
 }
@@ -91,8 +144,16 @@ impl iter::Iterator for Iterator {
   type Item = usize;
 
   fn next(&mut self) -> Option<Self::Item> {
-    let index = self.index;
     self.index += 1;
-    Some(index)
+    self.index += self.factor;
+    Some(self.index)
+  }
+}
+
+fn two_pow(n: usize) -> usize {
+  if n < 31 {
+    1 << n
+  } else {
+    ((1 << 30) * (1 << (n - 30)))
   }
 }
