@@ -1,8 +1,6 @@
 #![deny(missing_docs)]
 #![feature(external_doc)]
 #![doc(include = "../README.md")]
-#![cfg_attr(test, feature(plugin))]
-#![cfg_attr(test, plugin(clippy))]
 
 mod iterator;
 
