@@ -124,10 +124,7 @@ pub fn children_with_depth(i: usize, depth: usize) -> Option<(usize, usize)> {
     Some((i, i))
   } else {
     let offset = offset_with_depth(i, depth) * 2;
-    Some((
-      index(depth - 1, offset),
-      index(depth - 1, offset + 1),
-    ))
+    Some((index(depth - 1, offset), index(depth - 1, offset + 1)))
   }
 }
 
@@ -152,10 +149,7 @@ pub fn left_child_with_depth(i: usize, depth: usize) -> Option<usize> {
   } else if depth == 0 {
     Some(i)
   } else {
-    Some(index(
-      depth - 1,
-      offset_with_depth(i, depth) << 1,
-    ))
+    Some(index(depth - 1, offset_with_depth(i, depth) << 1))
   }
 }
 
@@ -178,10 +172,7 @@ pub fn right_child_with_depth(i: usize, depth: usize) -> Option<usize> {
   } else if depth == 0 {
     Some(i)
   } else {
-    Some(index(
-      depth - 1,
-      (offset_with_depth(i, depth) << 1) + 1,
-    ))
+    Some(index(depth - 1, (offset_with_depth(i, depth) << 1) + 1))
   }
 }
 
