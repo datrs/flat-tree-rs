@@ -3,9 +3,11 @@ rust:
   - nightly
 
 before_script: |
-  rustup component add rustfmt-preview
+  rustup component add rustfmt-preview &&
+  rustup component add clippy-preview
 script: |
   cargo fmt -- --check || true &&
+  cargo clippy -- -D clippy::all &&
   cargo build --verbose &&
   cargo test  --verbose
 cache: cargo
