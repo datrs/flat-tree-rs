@@ -10,17 +10,6 @@ use super::*;
 
 use std::iter;
 
-/// Creates flat_tree Iterator
-///
-/// ## Examples
-/// ```rust
-/// use flat_tree::iterator;
-/// assert_eq!(iterator(0).take(3).collect::<Vec<usize>>(), [2, 4, 6]);
-/// ```
-pub fn iterator(index: usize) -> Iterator {
-  Iterator::new(index)
-}
-
 /// Iterator over a flat-tree.
 #[derive(Debug)]
 pub struct Iterator {
@@ -31,6 +20,12 @@ pub struct Iterator {
 
 impl Iterator {
   /// Create a new iterator.
+  ///
+  /// ## Examples
+  /// ```rust
+  /// use flat_tree::Iterator;
+  /// assert_eq!(Iterator::new(0).take(3).collect::<Vec<usize>>(), [2, 4, 6]);
+  /// ```
   pub fn new(index: usize) -> Self {
     let mut instance = Self {
       index: 0,
@@ -58,7 +53,7 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// let mut iter = flat_tree::iterator(0);
+  /// let mut iter = flat_tree::Iterator::new(0);
   /// iter.seek(4);
   /// assert_eq!(iter.next(), Some(6));
   /// iter.seek(2);
@@ -79,9 +74,9 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(0).is_left(), true);
-  /// assert_eq!(flat_tree::iterator(2).is_left(), false);
-  /// assert_eq!(flat_tree::iterator(1).is_left(), true);
+  /// assert_eq!(flat_tree::Iterator::new(0).is_left(), true);
+  /// assert_eq!(flat_tree::Iterator::new(2).is_left(), false);
+  /// assert_eq!(flat_tree::Iterator::new(1).is_left(), true);
   /// ```
   #[inline]
   pub fn is_left(&self) -> bool {
@@ -92,9 +87,9 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(0).is_right(), false);
-  /// assert_eq!(flat_tree::iterator(2).is_right(), true);
-  /// assert_eq!(flat_tree::iterator(1).is_right(), false);
+  /// assert_eq!(flat_tree::Iterator::new(0).is_right(), false);
+  /// assert_eq!(flat_tree::Iterator::new(2).is_right(), true);
+  /// assert_eq!(flat_tree::Iterator::new(1).is_right(), false);
   /// ```
   #[inline]
   pub fn is_right(&self) -> bool {
@@ -105,7 +100,7 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// let mut iter = flat_tree::iterator(6);
+  /// let mut iter = flat_tree::Iterator::new(6);
   /// assert_eq!(iter.prev(), 4);
   /// assert_eq!(iter.prev(), 2);
   /// assert_eq!(iter.prev(), 0);
@@ -123,9 +118,9 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(0).sibling(), 2);
-  /// assert_eq!(flat_tree::iterator(1).sibling(), 5);
-  /// assert_eq!(flat_tree::iterator(4).sibling(), 6);
+  /// assert_eq!(flat_tree::Iterator::new(0).sibling(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(1).sibling(), 5);
+  /// assert_eq!(flat_tree::Iterator::new(4).sibling(), 6);
   /// ```
   pub fn sibling(&mut self) -> usize {
     if self.is_left() {
@@ -139,9 +134,9 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(0).parent(), 1);
-  /// assert_eq!(flat_tree::iterator(1).parent(), 3);
-  /// assert_eq!(flat_tree::iterator(4).parent(), 5);
+  /// assert_eq!(flat_tree::Iterator::new(0).parent(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(1).parent(), 3);
+  /// assert_eq!(flat_tree::Iterator::new(4).parent(), 5);
   /// ```
   pub fn parent(&mut self) -> usize {
     if is_odd(self.offset) {
@@ -159,11 +154,11 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(0).left_span(), 0);
-  /// assert_eq!(flat_tree::iterator(1).left_span(), 0);
-  /// assert_eq!(flat_tree::iterator(3).left_span(), 0);
-  /// assert_eq!(flat_tree::iterator(23).left_span(), 16);
-  /// assert_eq!(flat_tree::iterator(27).left_span(), 24);
+  /// assert_eq!(flat_tree::Iterator::new(0).left_span(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(1).left_span(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(3).left_span(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(23).left_span(), 16);
+  /// assert_eq!(flat_tree::Iterator::new(27).left_span(), 24);
   /// ```
   pub fn left_span(&mut self) -> usize {
     self.index = self.index + 1 - self.factor / 2;
@@ -176,11 +171,11 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(0).right_span(), 0);
-  /// assert_eq!(flat_tree::iterator(1).right_span(), 2);
-  /// assert_eq!(flat_tree::iterator(3).right_span(), 6);
-  /// assert_eq!(flat_tree::iterator(23).right_span(), 30);
-  /// assert_eq!(flat_tree::iterator(27).right_span(), 30);
+  /// assert_eq!(flat_tree::Iterator::new(0).right_span(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(1).right_span(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(3).right_span(), 6);
+  /// assert_eq!(flat_tree::Iterator::new(23).right_span(), 30);
+  /// assert_eq!(flat_tree::Iterator::new(27).right_span(), 30);
   /// ```
   pub fn right_span(&mut self) -> usize {
     self.index = self.index + self.factor / 2 - 1;
@@ -193,9 +188,9 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(1).left_child(), 0);
-  /// assert_eq!(flat_tree::iterator(3).left_child(), 1);
-  /// assert_eq!(flat_tree::iterator(7).left_child(), 3);
+  /// assert_eq!(flat_tree::Iterator::new(1).left_child(), 0);
+  /// assert_eq!(flat_tree::Iterator::new(3).left_child(), 1);
+  /// assert_eq!(flat_tree::Iterator::new(7).left_child(), 3);
   /// ```
   pub fn left_child(&mut self) -> usize {
     if self.factor == 2 {
@@ -211,9 +206,9 @@ impl Iterator {
   ///
   /// ## Examples
   /// ```rust
-  /// assert_eq!(flat_tree::iterator(1).right_child(), 2);
-  /// assert_eq!(flat_tree::iterator(3).right_child(), 5);
-  /// assert_eq!(flat_tree::iterator(7).right_child(), 11);
+  /// assert_eq!(flat_tree::Iterator::new(1).right_child(), 2);
+  /// assert_eq!(flat_tree::Iterator::new(3).right_child(), 5);
+  /// assert_eq!(flat_tree::Iterator::new(7).right_child(), 11);
   /// ```
   pub fn right_child(&mut self) -> usize {
     if self.factor == 2 {

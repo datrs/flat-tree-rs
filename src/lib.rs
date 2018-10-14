@@ -5,7 +5,6 @@
 mod iterator;
 
 pub use iterator::Iterator;
-pub use iterator::iterator;
 
 /// Returns the flat-tree of the tree node at the specified depth and offset.
 ///
