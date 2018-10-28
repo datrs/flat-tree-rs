@@ -1,6 +1,6 @@
 [package]
 name = "flat-tree"
-version = "3.4.0"
+version = "3.5.0"
 description = "Rust module for encoding/decoding varints that doesn't do any IO. Inspired by the Node.js varint module"
 authors = ["Mathias Buus <mathiasbuus@gmail.com>"]
 repository = "https://github.com/mafintosh/flat-tree-rs"
