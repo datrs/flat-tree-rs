@@ -7,3 +7,13 @@ repository = "https://github.com/mafintosh/flat-tree-rs"
 keywords = ["flat", "tree", "binary"]
 readme = "README.md"
 license = "MIT"
+
+[lib]
+bench = false
+
+[dev-dependencies]
+criterion = "0.2"
+
+[[bench]]
+name = "bench"
+harness = false
