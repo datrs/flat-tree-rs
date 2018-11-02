@@ -37,13 +37,8 @@ pub fn index(depth: usize, offset: usize) -> usize {
 /// ```
 #[inline]
 pub fn depth(i: usize) -> usize {
-  let mut depth = 0;
-  let mut i = i;
-  while is_odd(i) {
-    i >>= 1;
-    depth += 1;
-  }
-  depth
+  // Count trailing `1`s of the binary representation of the number.
+  (!i).trailing_zeros() as usize
 }
 
 /// Returns the offset of a node with a depth.
