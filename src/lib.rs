@@ -243,9 +243,11 @@ pub const fn count(i: usize) -> usize {
 }
 
 /// Returns a list of all the full roots (subtrees where all nodes have either 2
-/// or 0 children) `<` index.  For example `fullRoots(8)` returns `[3]` since
-/// the subtree rooted at `3` spans `0 -> 6`, and the tree rooted at `7` has a
-/// child located at `9` which is `>= 8`.
+/// or 0 children) `<` index.
+///
+/// For example `fullRoots(8)` returns `[3]` since the subtree rooted at `3`
+/// spans `0 -> 6`, and the tree rooted at `7` has a child located at `9` which
+/// is `>= 8`.
 ///
 /// ## Panics
 /// If an uneven index is passed.
