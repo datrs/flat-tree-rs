@@ -50,6 +50,12 @@ impl Iterator {
     self.offset
   }
 
+  /// Get the current factor.
+  #[inline]
+  pub fn factor(&self) -> usize {
+    self.factor
+  }
+
   /// Seek to a position in the iterator.
   ///
   /// ## Examples
