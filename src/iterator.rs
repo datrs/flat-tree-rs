@@ -13,9 +13,9 @@ use std::iter;
 /// Iterator over a flat-tree.
 #[derive(Debug)]
 pub struct Iterator {
-  index: usize,
-  offset: usize,
-  factor: usize,
+  index: u64,
+  offset: u64,
+  factor: u64,
 }
 
 impl Iterator {
@@ -24,10 +24,10 @@ impl Iterator {
   /// ## Examples
   /// ```rust
   /// use flat_tree::Iterator;
-  /// assert_eq!(Iterator::new(0).take(3).collect::<Vec<usize>>(), [2, 4, 6]);
+  /// assert_eq!(Iterator::new(0).take(3).collect::<Vec<u64>>(), [2, 4, 6]);
   /// ```
   #[inline]
-  pub fn new(index: usize) -> Self {
+  pub fn new(index: u64) -> Self {
     let mut instance = Self {
       index: 0,
       offset: 0,
@@ -40,19 +40,19 @@ impl Iterator {
 
   /// Get the current index.
   #[inline]
-  pub fn index(&self) -> usize {
+  pub fn index(&self) -> u64 {
     self.index
   }
 
   /// Get the current offset.
   #[inline]
-  pub fn offset(&self) -> usize {
+  pub fn offset(&self) -> u64 {
     self.offset
   }
 
   /// Get the current factor.
   #[inline]
-  pub fn factor(&self) -> usize {
+  pub fn factor(&self) -> u64 {
     self.factor
   }
 
@@ -67,7 +67,7 @@ impl Iterator {
   /// assert_eq!(iter.next(), Some(4));
   /// ```
   #[inline]
-  pub fn seek(&mut self, index: usize) {
+  pub fn seek(&mut self, index: u64) {
     self.index = index;
     if is_odd(self.index) {
       self.offset = offset(index);
@@ -114,7 +114,7 @@ impl Iterator {
   /// assert_eq!(iter.prev(), 0);
   /// ```
   #[inline]
-  pub fn prev(&mut self) -> usize {
+  pub fn prev(&mut self) -> u64 {
     if self.offset == 0 {
       return self.index;
     }
@@ -132,7 +132,7 @@ impl Iterator {
   /// assert_eq!(flat_tree::Iterator::new(4).sibling(), 6);
   /// ```
   #[inline]
-  pub fn sibling(&mut self) -> usize {
+  pub fn sibling(&mut self) -> u64 {
     if self.is_left() {
       self.next().unwrap() // this is always safe
     } else {
@@ -149,7 +149,7 @@ impl Iterator {
   /// assert_eq!(flat_tree::Iterator::new(4).parent(), 5);
   /// ```
   #[inline]
-  pub fn parent(&mut self) -> usize {
+  pub fn parent(&mut self) -> u64 {
     if is_odd(self.offset) {
       self.index -= self.factor / 2;
       self.offset = (self.offset - 1) / 2;
@@ -172,7 +172,7 @@ impl Iterator {
   /// assert_eq!(flat_tree::Iterator::new(27).left_span(), 24);
   /// ```
   #[inline]
-  pub fn left_span(&mut self) -> usize {
+  pub fn left_span(&mut self) -> u64 {
     self.index = self.index + 1 - self.factor / 2;
     self.offset = self.index / 2;
     self.factor = 2;
@@ -190,7 +190,7 @@ impl Iterator {
   /// assert_eq!(flat_tree::Iterator::new(27).right_span(), 30);
   /// ```
   #[inline]
-  pub fn right_span(&mut self) -> usize {
+  pub fn right_span(&mut self) -> u64 {
     self.index = self.index + self.factor / 2 - 1;
     self.offset = self.index / 2;
     self.factor = 2;
@@ -206,7 +206,7 @@ impl Iterator {
   /// assert_eq!(flat_tree::Iterator::new(7).left_child(), 3);
   /// ```
   #[inline]
-  pub fn left_child(&mut self) -> usize {
+  pub fn left_child(&mut self) -> u64 {
     if self.factor == 2 {
       return self.index;
     }
@@ -225,7 +225,7 @@ impl Iterator {
   /// assert_eq!(flat_tree::Iterator::new(7).right_child(), 11);
   /// ```
   #[inline]
-  pub fn right_child(&mut self) -> usize {
+  pub fn right_child(&mut self) -> u64 {
     if self.factor == 2 {
       return self.index;
     }
@@ -237,7 +237,7 @@ impl Iterator {
 }
 
 impl iter::Iterator for Iterator {
-  type Item = usize;
+  type Item = u64;
 
   #[inline]
   fn next(&mut self) -> Option<Self::Item> {
@@ -255,7 +255,7 @@ impl Default for Iterator {
 }
 
 #[inline]
-fn two_pow(n: usize) -> usize {
+fn two_pow(n: u64) -> u64 {
   if n < 31 {
     1 << n
   } else {
