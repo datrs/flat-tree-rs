@@ -21,7 +21,7 @@ pub use iterator::Iterator;
 /// assert_eq!(flat_tree::index(3, 1), 23);
 /// ```
 #[inline]
-pub const fn index(depth: usize, offset: usize) -> usize {
+pub const fn index(depth: u64, offset: u64) -> u64 {
   (offset << (depth + 1)) | ((1 << depth) - 1)
 }
 
@@ -36,9 +36,9 @@ pub const fn index(depth: usize, offset: usize) -> usize {
 /// assert_eq!(flat_tree::depth(4), 0);
 /// ```
 #[inline]
-pub const fn depth(i: usize) -> usize {
+pub const fn depth(i: u64) -> u64 {
   // Count trailing `1`s of the binary representation of the number.
-  (!i).trailing_zeros() as usize
+  (!i).trailing_zeros() as u64
 }
 
 /// Returns the offset of a node.
@@ -52,7 +52,7 @@ pub const fn depth(i: usize) -> usize {
 /// assert_eq!(flat_tree::offset(4), 2);
 /// ```
 #[inline]
-pub fn offset(i: usize) -> usize {
+pub fn offset(i: u64) -> u64 {
   let depth = self::depth(i);
   if is_even(i) {
     i / 2
@@ -72,7 +72,7 @@ pub fn offset(i: usize) -> usize {
 /// assert_eq!(flat_tree::parent(4), 5);
 /// ```
 #[inline]
-pub fn parent(i: usize) -> usize {
+pub fn parent(i: u64) -> u64 {
   let depth = self::depth(i);
   index(depth + 1, offset(i) >> 1)
 }
@@ -87,7 +87,7 @@ pub fn parent(i: usize) -> usize {
 /// assert_eq!(flat_tree::sibling(5), 1);
 /// ```
 #[inline]
-pub fn sibling(i: usize) -> usize {
+pub fn sibling(i: u64) -> u64 {
   let depth = self::depth(i);
   index(depth, offset(i) ^ 1)
 }
@@ -102,7 +102,7 @@ pub fn sibling(i: usize) -> usize {
 /// assert_eq!(flat_tree::uncle(5), 11);
 /// ```
 #[inline]
-pub fn uncle(i: usize) -> usize {
+pub fn uncle(i: u64) -> u64 {
   let depth = self::depth(i);
   index(depth + 1, offset(parent(i)) ^ 1)
 }
@@ -117,7 +117,7 @@ pub fn uncle(i: usize) -> usize {
 /// assert_eq!(flat_tree::children(9), Some((8, 10)));
 /// ```
 #[inline]
-pub fn children(i: usize) -> Option<(usize, usize)> {
+pub fn children(i: u64) -> Option<(u64, u64)> {
   let depth = self::depth(i);
   if is_even(i) {
     None
@@ -138,7 +138,7 @@ pub fn children(i: usize) -> Option<(usize, usize)> {
 /// assert_eq!(flat_tree::left_child(3), Some(1));
 /// ```
 #[inline]
-pub fn left_child(i: usize) -> Option<usize> {
+pub fn left_child(i: u64) -> Option<u64> {
   let depth = self::depth(i);
   if is_even(i) {
     None
@@ -159,7 +159,7 @@ pub fn left_child(i: usize) -> Option<usize> {
 /// ```
 // TODO: handle errors
 #[inline]
-pub fn right_child(i: usize) -> Option<usize> {
+pub fn right_child(i: u64) -> Option<u64> {
   let depth = self::depth(i);
   if is_even(i) {
     None
@@ -181,7 +181,7 @@ pub fn right_child(i: usize) -> Option<usize> {
 /// assert_eq!(flat_tree::right_span(27), 30);
 /// ```
 #[inline]
-pub fn right_span(i: usize) -> usize {
+pub fn right_span(i: u64) -> u64 {
   let depth = self::depth(i);
   if depth == 0 {
     i
@@ -201,7 +201,7 @@ pub fn right_span(i: usize) -> usize {
 /// assert_eq!(flat_tree::left_span(27), 24);
 /// ```
 #[inline]
-pub fn left_span(i: usize) -> usize {
+pub fn left_span(i: u64) -> u64 {
   let depth = self::depth(i);
   if depth == 0 {
     i
@@ -221,7 +221,7 @@ pub fn left_span(i: usize) -> usize {
 /// assert_eq!(flat_tree::spans(27), (24, 30));
 /// ```
 #[inline]
-pub fn spans(i: usize) -> (usize, usize) {
+pub fn spans(i: u64) -> (u64, u64) {
   (left_span(i), right_span(i))
 }
 
@@ -237,7 +237,7 @@ pub fn spans(i: usize) -> (usize, usize) {
 /// assert_eq!(flat_tree::count(27), 7);
 /// ```
 #[inline]
-pub const fn count(i: usize) -> usize {
+pub const fn count(i: u64) -> u64 {
   let depth = self::depth(i);
   (2 << depth) - 1
 }
@@ -281,7 +281,7 @@ pub const fn count(i: usize) -> usize {
 /// assert_eq!(nodes, [7]);
 /// ```
 #[inline]
-pub fn full_roots(i: usize, nodes: &mut Vec<usize>) {
+pub fn full_roots(i: u64, nodes: &mut Vec<u64>) {
   assert!(
     is_even(i),
     format!(
@@ -308,12 +308,12 @@ pub fn full_roots(i: usize, nodes: &mut Vec<usize>) {
 }
 
 #[inline]
-pub(crate) const fn is_even(num: usize) -> bool {
+pub(crate) const fn is_even(num: u64) -> bool {
   (num & 1) == 0
 }
 
 #[inline]
-pub(crate) const fn is_odd(num: usize) -> bool {
+pub(crate) const fn is_odd(num: u64) -> bool {
   (num & 1) != 0
 }
 
